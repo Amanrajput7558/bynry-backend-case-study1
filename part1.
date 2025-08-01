@@ -1,0 +1,14 @@
+# What was wrong in the original code?
+
+1. Missing field checks
+2. SKU uniqueness not checked
+3. Two separate database commits
+4. No error handling
+5. No data type validation
+
+# What I fixed?
+- Added required field validation
+- Checked for duplicate SKU
+- Used one transaction (one commit)
+- Added error handling with rollback
+- Converted price to float safely
