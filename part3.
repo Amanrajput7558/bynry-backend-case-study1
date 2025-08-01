@@ -1,0 +1,19 @@
+# Part 3: Low Stock Alerts API
+
+# Goal:
+To return all products for a company that have low stock in any warehouse.
+
+
+# Assumptions:
+- Threshold for low stock is set to 20 (can be dynamic in real implementation)
+- Recent sales check is assumed to be always true
+- Supplier info is connected through a many-to-many relationship
+- Days until stockout is a placeholder value (12)
+
+
+# Logic:
+1. Get all warehouses for the company
+2. For each warehouse, check all product inventories
+3. If current stock < threshold → add to alerts list
+4. Attach supplier info from `supplier_products` mapping
+5. Return final alert list as JSON
