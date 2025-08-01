@@ -1,0 +1,47 @@
+from flask import Flask, jsonify
+from models import db, Product, Inventory, Warehouse, Supplier, SupplierProduct
+app = Flask(__name__)
+@app.route('/api/companies/<int:company_id>/alerts/low-stock', methods=['GET'])
+def get_low_stock_alerts(company_id):
+    alerts = []
+
+    warehouses = Warehouse.query.filter_by(company_id=company_id).all()
+
+    for warehouse in warehouses:
+        inventories = Inventory.query.filter_by(warehouse_id=warehouse.id).all()
+
+        for inv in inventories:
+            product = Product.query.get(inv.product_id)
+
+            threshold = 20  # Assumed static value for now
+
+            if inv.quantity >= threshold:
+                continue
+
+            supplier = Supplier.query\
+                .join(SupplierProduct, Supplier.id == SupplierProduct.supplier_id)\
+                .filter(SupplierProduct.product_id == product.id)\
+                .first()
+
+            alert = {
+                "product_id": product.id,
+                "product_name": product.name,
+                "sku": product.sku,
+                "warehouse_id": warehouse.id,
+                "warehouse_name": warehouse.name,
+                "current_stock": inv.quantity,
+                "threshold": threshold,
+                "days_until_stockout": 12,  # Dummy value
+                "supplier": {
+                    "id": supplier.id if supplier else None,
+                    "name": supplier.name if supplier else None,
+                    "contact_email": supplier.contact_email if supplier else None
+                }
+            }
+
+            alerts.append(alert)
+
+    return jsonify({
+        "alerts": alerts,
+        "total_alerts": len(alerts)
+    }), 200
