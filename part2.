@@ -1,0 +1,14 @@
+# Missing Information
+
+1. Where to store product's low stock threshold?
+2. How to track recent sales for each product?
+3. What defines if a product is a bundle or not?
+4. Do products have categories or types?
+5. Should inventory changes be versioned or logged?
+
+# Design Decisions:
+- Used `companies` and `warehouses` with foreign key relationship.
+- Used `products` with a `is_bundle` flag.
+- Inventory is linked to product and warehouse, and includes quantity and timestamp.
+- Supplier and product have many-to-many relation through `supplier_products` table.
+- Bundles are handled in a separate table with quantity of each component.
